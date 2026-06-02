@@ -19,7 +19,7 @@
         <div th:each="item : ${session.items}">
             <img th:src=${item.imageUrl} alt="">
             <p th:text=${item.name}></p>
-            <p th:text=${item.prices}></p>
+            <p th:text=${item.price}></p>
             <button>Add to Cart</button>
         </div>
     </div>
