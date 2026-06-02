@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${item.name} + ' - RogerMart'">Item Detail</title>
+    <link rel="stylesheet" th:href="@{/css/home.style.css}">
+    <link rel="stylesheet" th:href="@{/css/detail.style.css}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand"><a th:href="@{/home}" style="color: inherit; text-decoration: none;">RogerMart.</a></div>
+        <div class="nav-search"><input type="text" placeholder="What are you looking for?"></div>
+        <div class="nav-links">
+            <span class="user-greeting" th:if="${session.user != null}">
+                <a th:href="@{/profile}" style="text-decoration: none; color: inherit;">Welcome Back, <span
+                        th:text="${session.user.name}"></span>!</a>
+            </span>
+            <span class="user-greeting" th:unless="${session.user != null}">
+                Welcome, Guest! <a th:href="@{/login}" class="btn-nav-login">Login</a>
+            </span>
+            <a th:href="@{/wishlist}">Wishlist</a>
+            <a th:href="@{/cart}" class="cart-link">Cart <span class="cart-badge"
+                    th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"></span></a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="product-container">
+            <div class="product-image-box">
+                <img th:src="${item.imageUrl}" class="product-image">
+            </div>
+
+            <div class="product-info-box">
+                <h2 class="product-title" th:text="${item.name}"></h2>
+                <p class="product-price" th:text="'¥' + ${item.price}"></p>
+                <p class="product-description" th:text="${item.description}"></p>
+
+                <div class="product-actions">
+                    <div class="action-row-1">
+                        <form th:action="@{/cart/add}" method="post" class="form-add-cart">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <button type="submit" class="btn-add-cart">Add to Cart</button>
+                        </form>
+
+                        <form th:action="@{/wishlist/add}" method="post" class="form-wishlist">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <button type="submit" class="btn-wishlist"
+                                th:classappend="${isWishlisted != null and isWishlisted} ? 'btn-wishlisted' : ''"
+                                title="Toggle Wishlist">♥</button>
+                        </form>
+                    </div>
+
+                    <div class="action-row-2">
+                        <form th:action="@{/cart/buyNow}" method="post" style="width: 100%;">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <button type="submit" class="btn-buy-now">Buy Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast" class="toast" th:if="${toastMessage}" th:text="${toastMessage}"></div>
+</body>
+
+</html>

@@ -38,9 +38,13 @@
         <h2>Featured Items</h2>
         <div class="item-grid">
             <div class="item-card" th:each="item : ${session.items}">
-                <img th:src="${item.imageUrl}" alt="Item Image" class="item-image">
+                <a th:href="@{/item/{id}(id=${item.id})}" style="text-decoration: none; color: inherit;">
+                    <img th:src="${item.imageUrl}" alt="Item Image" class="item-image">
+                </a>
                 <div class="item-details">
-                    <p class="item-name" th:text="${item.name}"></p>
+                    <a th:href="@{/item/{id}(id=${item.id})}" style="text-decoration: none; color: inherit;">
+                        <p class="item-name" th:text="${item.name}"></p>
+                    </a>
                     <p class="item-price" th:text="'¥' + ${item.price}"></p>
 
                     <div class="item-actions">

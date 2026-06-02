@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.domain.Item;
 import com.example.domain.User;
 import com.example.domain.WishlistItem;
 import com.example.service.ItemService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -43,5 +45,22 @@ public class ItemController {
         }
 
         return "home";
+    }
+
+    @GetMapping("/item/{id}")
+    public String itemDetail(@PathVariable Integer id, Model model) {
+        Item item = itemService.findById(id);
+        if (item == null) {
+            return "redirect:/home"; // Item not found
+        }
+        model.addAttribute("item", item);
+
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            WishlistItem wishlistItem = wishlistService.findByUserIdAndItemId(user.getId(), id);
+            model.addAttribute("isWishlisted", wishlistItem != null);
+        }
+
+        return "detail";
     }
 }
