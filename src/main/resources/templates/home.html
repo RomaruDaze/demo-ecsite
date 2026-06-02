@@ -49,9 +49,16 @@
                             <button type="submit" class="btn-add-cart">Add to Cart</button>
                         </form>
 
+                        <form th:action="@{/cart/buyNow}" method="post" style="flex: 1;">
+                            <input type="hidden" name="itemId" th:value="${item.id}">
+                            <button type="submit" class="btn-buy-now">Buy Now</button>
+                        </form>
+
                         <form th:action="@{/wishlist/add}" method="post">
                             <input type="hidden" name="itemId" th:value="${item.id}">
-                            <button type="submit" class="btn-wishlist" title="Add to Wishlist">♥</button>
+                            <button type="submit" class="btn-wishlist"
+                                th:classappend="${wishlistedItemIds != null and #lists.contains(wishlistedItemIds, item.id)} ? 'btn-wishlisted' : ''"
+                                title="Add to Wishlist">♥</button>
                         </form>
                     </div>
 

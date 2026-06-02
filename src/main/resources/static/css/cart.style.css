@@ -66,3 +66,9 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.cart-item-check {
+    margin-right: 15px;
+    transform: scale(1.5);
+    cursor: pointer;
+    accent-color: #007bff;
+}

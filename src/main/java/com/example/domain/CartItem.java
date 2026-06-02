@@ -12,5 +12,6 @@ public class CartItem {
     private Integer userId;
     private Integer itemId;
     private Integer quantity;
-    private Item item; // Holds the joined item details
+    private boolean checked;
+    private Item item;
 }

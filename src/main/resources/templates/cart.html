@@ -42,18 +42,20 @@
                 <p th:if="${#lists.isEmpty(cartItems)}">Your cart is empty.</p>
 
                 <div class="cart-item-row" th:each="cItem : ${cartItems}">
+                    <input type="checkbox" class="cart-item-check" th:checked="${cItem.checked}"
+                        th:attr="data-id=${cItem.id}">
+
                     <img th:src="${cItem.item.imageUrl}" class="cart-image">
+
                     <div class="cart-item-info">
                         <h4 th:text="${cItem.item.name}"></h4>
                         <p class="cart-price" th:text="'¥' + ${cItem.item.price}"></p>
 
                         <div class="quantity-controls">
                             <button type="button" class="btn-qty-minus" th:attr="data-id=${cItem.id}">-</button>
-
-                            <input type="number" class="qty-input" th:id="'qty-' + ${cItem.id}"
+                            <input type="text" class="qty-input" th:id="'qty-' + ${cItem.id}"
                                 th:attr="data-id=${cItem.id}, data-original=${cItem.quantity}"
                                 th:value="${cItem.quantity}" min="0">
-
                             <button type="button" class="btn-qty-plus" th:attr="data-id=${cItem.id}">+</button>
                         </div>
 
@@ -62,6 +64,13 @@
                             <input type="hidden" name="id" th:value="${cItem.id}">
                             <input type="hidden" name="quantity" th:id="'hidden-qty-' + ${cItem.id}"
                                 th:value="${cItem.quantity}">
+                        </form>
+
+                        <form th:id="'form-check-update-' + ${cItem.id}" th:action="@{/cart/updateChecked}"
+                            method="post" style="display:none;">
+                            <input type="hidden" name="id" th:value="${cItem.id}">
+                            <input type="hidden" name="checked" th:id="'hidden-check-' + ${cItem.id}"
+                                th:value="${cItem.checked}">
                         </form>
                     </div>
 
@@ -122,6 +131,15 @@
                 let newQty = parseInt(input.value) + 1;
                 input.value = newQty;
                 updateCartQuantity(id, newQty, original);
+            });
+        });
+
+        // Handle checkbox toggles instantly
+        document.querySelectorAll('.cart-item-check').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const id = this.dataset.id;
+                document.getElementById('hidden-check-' + id).value = this.checked;
+                document.getElementById('form-check-update-' + id).submit();
             });
         });
     </script>

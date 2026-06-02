@@ -31,8 +31,11 @@ public class CartController {
 
         List<CartItem> cartItems = cartService.findByUserId(user.getId());
 
-        // Calculate total price
-        int total = cartItems.stream().mapToInt(c -> c.getItem().getPrice() * c.getQuantity()).sum();
+        // NEW: Calculate total price ONLY for checked items
+        int total = cartItems.stream()
+                .filter(CartItem::isChecked)
+                .mapToInt(c -> c.getItem().getPrice() * c.getQuantity())
+                .sum();
 
         model.addAttribute("cartItems", cartItems);
         model.addAttribute("totalPrice", total);
@@ -48,12 +51,36 @@ public class CartController {
         if (existing != null) {
             cartService.updateQuantity(existing.getId(), existing.getQuantity() + 1);
         } else {
-            cartService.add(user.getId(), itemId);
+            cartService.add(user.getId(), itemId, false); // Default unchecked
         }
 
         redirectAttributes.addFlashAttribute("toastMessage", "Added to Cart!");
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/home");
+    }
+
+    // NEW: Buy Now endpoint
+    @PostMapping("/buyNow")
+    public String buyNow(@RequestParam Integer itemId) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        CartItem existing = cartService.findByUserIdAndItemId(user.getId(), itemId);
+        if (existing != null) {
+            cartService.updateQuantity(existing.getId(), existing.getQuantity() + 1);
+            cartService.updateChecked(existing.getId(), true); // Force check it
+        } else {
+            cartService.add(user.getId(), itemId, true); // Insert as checked
+        }
+
+        return "redirect:/cart"; // Send straight to cart
+    }
+
+    // NEW: Update checked status endpoint
+    @PostMapping("/updateChecked")
+    public String updateChecked(@RequestParam Integer id, @RequestParam boolean checked) {
+        cartService.updateChecked(id, checked);
+        return "redirect:/cart";
     }
 
     // Add this new endpoint

@@ -12,8 +12,10 @@ public class CartService {
     private CartRepository cartRepository;
 
     public List<CartItem> findByUserId(Integer userId) { return cartRepository.findByUserId(userId); }
-    public void add(Integer userId, Integer itemId) { cartRepository.add(userId, itemId); }
-    public void remove(Integer id) { cartRepository.remove(id); }
     public CartItem findByUserIdAndItemId(Integer userId, Integer itemId) { return cartRepository.findByUserIdAndItemId(userId, itemId); }
+
+    public void add(Integer userId, Integer itemId, boolean checked) { cartRepository.add(userId, itemId, checked); }
     public void updateQuantity(Integer id, Integer quantity) { cartRepository.updateQuantity(id, quantity); }
+    public void updateChecked(Integer id, boolean checked) { cartRepository.updateChecked(id, checked); }
+    public void remove(Integer id) { cartRepository.remove(id); }
 }
