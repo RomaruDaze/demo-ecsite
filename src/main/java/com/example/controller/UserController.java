@@ -77,4 +77,37 @@ public class UserController {
         userService.save(user);
         return "redirect:/login"; // Typically redirect to avoid duplicate submissions
     }
+
+    @PostMapping("/update-address")
+    public String updateAddress(
+            @RequestParam String zipcode,
+            @RequestParam String prefecture,
+            @RequestParam String municipalities,
+            @RequestParam String address,
+            @RequestParam String telephone) {
+
+        // 1. Get the currently logged-in user from the session
+        User user = (User) session.getAttribute("user");
+
+        // Safety check: if they somehow submit without being logged in, send them to login
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // 2. Update the user's fields with the new form data
+        user.setZipcode(zipcode);
+        user.setPrefecture(prefecture);
+        user.setMunicipalities(municipalities);
+        user.setAddress(address);
+        user.setTelephone(telephone);
+
+        // 3. Save the changes to the database
+        userService.updateAddress(user);
+
+        // 4. Overwrite the session with the updated user object so the UI reflects the changes instantly
+        session.setAttribute("user", user);
+
+        // 5. Redirect back to home
+        return "redirect:/home";
+    }
 }

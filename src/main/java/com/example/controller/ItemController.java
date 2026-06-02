@@ -16,10 +16,15 @@ public class ItemController {
     @Autowired
     private HttpSession session;
 
+    // Optional: Redirect root URL to home
+    @GetMapping("")
+    public String root() {
+        return "redirect:/home";
+    }
+
     @GetMapping("home")
     public String home() {
         session.setAttribute("items", itemService.findAll());
         return "home";
     }
-
 }

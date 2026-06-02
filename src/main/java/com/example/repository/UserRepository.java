@@ -56,7 +56,7 @@ public class UserRepository {
             user.setId(keyHolder.getKey().intValue());
             System.out.println(keyHolder.getKey() + "が割り当てられました。");
         } else {
-            String updateSql = "UPDATE  " +
+            String updateSql = "UPDATE users " +
                     "SET name=:name" +
                     ",email=:email" +
                     ",password=:password" +
@@ -69,5 +69,19 @@ public class UserRepository {
 
             template.update(updateSql, param);
         }
+    }
+
+    public void updateAddress(User user) {
+        System.out.println("RepositoryUpdateAddress");
+        String updateSql = "UPDATE users SET " +
+                "zipcode=:zipcode, " +
+                "prefecture=:prefecture, " +
+                "municipalities=:municipalities, " +
+                "address=:address, " +
+                "telephone=:telephone " +
+                "WHERE id=:id";
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(user);
+        template.update(updateSql, param);
     }
 }

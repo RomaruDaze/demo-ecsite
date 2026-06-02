@@ -1,29 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home - RogerMart</title>
+    <link rel="stylesheet" th:href="@{/css/home.style.css}">
 </head>
 
 <body>
-    <div>
-        <nav>
-            <span>RogerMart.</span>
+    <nav class="navbar">
+        <div class="nav-brand">RogerMart.</div>
+
+        <div class="nav-search">
             <input type="text" placeholder="What are you looking for?">
-            <span>Welcome Back! <span th:text=${session.user.name}></span></span>
-            <a href="">wishlist</a>
-            <a href="">cart</a>
-        </nav>
-        <div th:each="item : ${session.items}">
-            <img th:src=${item.imageUrl} alt="">
-            <p th:text=${item.name}></p>
-            <p th:text=${item.price}></p>
-            <button>Add to Cart</button>
+        </div>
+
+        <div class="nav-links">
+            <span class="user-greeting" th:if="${session.user != null}">
+                Welcome Back, <span th:text="${session.user.name}"></span>!
+                <button id="btn-shipping-address" class="btn-secondary">Shipping Address</button>
+            </span>
+
+            <span class="user-greeting" th:unless="${session.user != null}">
+                Welcome, Guest!
+                <a th:href="@{/login}" class="btn-nav-login">Login</a>
+            </span>
+
+            <a th:href="@{/wishlist}">Wishlist</a>
+            <a th:href="@{/cart}">Cart</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h2>Featured Items</h2>
+        <div class="item-grid">
+            <div class="item-card" th:each="item : ${session.items}">
+                <img th:src="${item.imageUrl}" alt="Item Image" class="item-image">
+                <div class="item-details">
+                    <p class="item-name" th:text="${item.name}"></p>
+                    <p class="item-price" th:text="'¥' + ${item.price}"></p>
+                    <button class="btn-add-cart">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="address-modal" class="modal" th:if="${session.user != null}">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>Update Shipping Address</h3>
+
+            <form id="address-form" th:action="@{/update-address}" method="post">
+
+                <div class="form-group">
+                    <label>Zip-Code</label>
+                    <input type="text" name="zipcode" class="track-change" th:value="${session.user.zipcode}"
+                        th:data-original="${session.user.zipcode}">
+                </div>
+
+                <div class="form-group">
+                    <label>Prefecture</label>
+                    <input type="text" name="prefecture" class="track-change" th:value="${session.user.prefecture}"
+                        th:data-original="${session.user.prefecture}">
+                </div>
+
+                <div class="form-group">
+                    <label>Municipalities</label>
+                    <input type="text" name="municipalities" class="track-change"
+                        th:value="${session.user.municipalities}" th:data-original="${session.user.municipalities}">
+                </div>
+
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" name="address" class="track-change" th:value="${session.user.address}"
+                        th:data-original="${session.user.address}">
+                </div>
+
+                <div class="form-group">
+                    <label>Telephone</label>
+                    <input type="text" name="telephone" class="track-change" th:value="${session.user.telephone}"
+                        th:data-original="${session.user.telephone}">
+                </div>
+
+                <button type="submit" id="btn-save-address" class="btn-submit" disabled>Save Changes</button>
+            </form>
         </div>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("address-modal");
+            // If modal doesn't exist (user is guest), exit script safely
+            if (!modal) return;
+
+            const btn = document.getElementById("btn-shipping-address");
+            const closeBtn = document.querySelector(".close-btn");
+            const saveBtn = document.getElementById("btn-save-address");
+            const inputs = modal.querySelectorAll(".track-change");
+
+            // Open Modal
+            btn.onclick = () => modal.style.display = "flex";
+
+            // Close Modal via X button
+            closeBtn.onclick = () => modal.style.display = "none";
+
+            // Close Modal by clicking outside of it
+            window.onclick = (e) => {
+                if (e.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            // Detect changes in input fields
+            inputs.forEach(input => {
+                input.addEventListener("input", () => {
+                    // Check if ANY field has a value different from its original value
+                    let hasChanges = Array.from(inputs).some(inp => inp.value !== inp.getAttribute("data-original"));
+
+                    // Enable if there are changes, disable if there are none
+                    saveBtn.disabled = !hasChanges;
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
