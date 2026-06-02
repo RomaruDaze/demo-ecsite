@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Wishlist - RogerMart</title>
+    <link rel="stylesheet" th:href="@{/css/home.style.css}">
+    <link rel="stylesheet" th:href="@{/css/wishlist.style.css}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand"><a th:href="@{/home}" style="color: inherit; text-decoration: none;">RogerMart.</a></div>
+        <div class="nav-links">
+            <span class="user-greeting">Welcome, <span th:text="${session.user.name}"></span>!</span>
+            <a th:href="@{/wishlist}">Wishlist</a>
+            <a th:href="@{/cart}">Cart</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h2>Your Wishlist</h2>
+        <div class="item-grid">
+            <p th:if="${#lists.isEmpty(wishlistItems)}">Your wishlist is empty.</p>
+
+            <div class="item-card" th:each="wItem : ${wishlistItems}">
+                <img th:src="${wItem.item.imageUrl}" alt="Item Image" class="item-image">
+                <div class="item-details">
+                    <p class="item-name" th:text="${wItem.item.name}"></p>
+                    <p class="item-price" th:text="'¥' + ${wItem.item.price}"></p>
+
+                    <div class="action-buttons">
+                        <form th:action="@{/cart/add}" method="post" style="flex: 1;">
+                            <input type="hidden" name="itemId" th:value="${wItem.item.id}">
+                            <button type="submit" class="btn-add-cart">Move to Cart</button>
+                        </form>
+
+                        <form th:action="@{/wishlist/remove}" method="post">
+                            <input type="hidden" name="id" th:value="${wItem.id}">
+                            <button type="submit" class="btn-remove">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="toast" class="toast" th:if="${toastMessage}" th:text="${toastMessage}"></div>
+</body>
+
+</html>

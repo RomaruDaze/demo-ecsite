@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cart - RogerMart</title>
+    <link rel="stylesheet" th:href="@{/css/home.style.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.style.css}">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand"><a th:href="@{/home}" style="color: inherit; text-decoration: none;">RogerMart.</a></div>
+        <div class="nav-links">
+            <span class="user-greeting">Welcome, <span th:text="${session.user.name}"></span>!</span>
+            <a th:href="@{/wishlist}">Wishlist</a>
+            <a th:href="@{/cart}">Cart</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h2>Your Shopping Cart</h2>
+
+        <div class="cart-layout">
+            <div class="cart-items">
+                <p th:if="${#lists.isEmpty(cartItems)}">Your cart is empty.</p>
+
+                <div class="cart-item-row" th:each="cItem : ${cartItems}">
+                    <img th:src="${cItem.item.imageUrl}" class="cart-image">
+                    <div class="cart-item-info">
+                        <h4 th:text="${cItem.item.name}"></h4>
+                        <p class="cart-price" th:text="'¥' + ${cItem.item.price}"></p>
+                        <p>Quantity: <span th:text="${cItem.quantity}"></span></p>
+                    </div>
+                    <form th:action="@{/cart/remove}" method="post">
+                        <input type="hidden" name="id" th:value="${cItem.id}">
+                        <button type="submit" class="btn-remove">Remove</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="cart-summary" th:unless="${#lists.isEmpty(cartItems)}">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Total:</span>
+                    <span class="total-price" th:text="'¥' + ${totalPrice}"></span>
+                </div>
+                <button class="btn-checkout">Proceed to Checkout</button>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
