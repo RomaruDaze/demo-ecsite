@@ -23,4 +23,6 @@ public class UserService {
     public void updateAddress(User user) {
         userRepository.save(user);
     }
+
+    public void updateProfile(User user) { userRepository.updateProfile(user); }
 }

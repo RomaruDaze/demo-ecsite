@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("")
@@ -109,5 +110,42 @@ public class UserController {
 
         // 5. Redirect back to home
         return "redirect:/home";
+    }
+
+    // Add these methods to UserController.java
+    @GetMapping("logout")
+    public String logout() {
+        session.invalidate();
+        return "redirect:/home";
+    }
+
+    @GetMapping("profile")
+    public String viewProfile() {
+        if (session.getAttribute("user") == null) return "redirect:/login";
+        return "profile";
+    }
+
+    @PostMapping("profile/update")
+    public String updateProfile(
+            @RequestParam String name, @RequestParam String zipcode,
+            @RequestParam String prefecture, @RequestParam String municipalities,
+            @RequestParam String address, @RequestParam String telephone,
+            RedirectAttributes redirectAttributes) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        user.setName(name);
+        user.setZipcode(zipcode);
+        user.setPrefecture(prefecture);
+        user.setMunicipalities(municipalities);
+        user.setAddress(address);
+        user.setTelephone(telephone);
+
+        userService.updateProfile(user);
+        session.setAttribute("user", user); // Update session state
+        redirectAttributes.addFlashAttribute("toastMessage", "Profile updated successfully!");
+
+        return "redirect:/profile";
     }
 }

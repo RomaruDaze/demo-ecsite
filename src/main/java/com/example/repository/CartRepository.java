@@ -52,4 +52,21 @@ public class CartRepository {
         SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
         template.update(sql, param);
     }
+
+    public CartItem findByUserIdAndItemId(Integer userId, Integer itemId) {
+        String sql = "SELECT c.id, c.user_id, c.item_id, c.quantity, i.name as item_name, i.price as item_price, i.image_url as item_image " +
+                "FROM cart c JOIN items i ON c.item_id = i.id WHERE c.user_id = :userId AND c.item_id = :itemId";
+        SqlParameterSource param = new MapSqlParameterSource().addValue("userId", userId).addValue("itemId", itemId);
+        try {
+            return template.queryForObject(sql, param, ROW_MAPPER);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public void updateQuantity(Integer id, Integer quantity) {
+        String sql = "UPDATE cart SET quantity = :quantity WHERE id = :id";
+        SqlParameterSource param = new MapSqlParameterSource().addValue("quantity", quantity).addValue("id", id);
+        template.update(sql, param);
+    }
 }

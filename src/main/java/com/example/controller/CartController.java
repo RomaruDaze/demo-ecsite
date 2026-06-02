@@ -44,12 +44,29 @@ public class CartController {
         User user = (User) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
-        cartService.add(user.getId(), itemId);
-        redirectAttributes.addFlashAttribute("toastMessage", "Added to Cart!");
+        CartItem existing = cartService.findByUserIdAndItemId(user.getId(), itemId);
+        if (existing != null) {
+            cartService.updateQuantity(existing.getId(), existing.getQuantity() + 1);
+        } else {
+            cartService.add(user.getId(), itemId);
+        }
 
-        // Redirect back to the page the user clicked the button from
+        redirectAttributes.addFlashAttribute("toastMessage", "Added to Cart!");
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/home");
+    }
+
+    // Add this new endpoint
+    @PostMapping("/updateQuantity")
+    public String updateQuantity(@RequestParam Integer id, @RequestParam Integer quantity, RedirectAttributes redirectAttributes) {
+        if (quantity <= 0) {
+            cartService.remove(id);
+            redirectAttributes.addFlashAttribute("toastMessage", "Item removed from cart");
+        } else {
+            cartService.updateQuantity(id, quantity);
+            redirectAttributes.addFlashAttribute("toastMessage", "Cart updated");
+        }
+        return "redirect:/cart";
     }
 
     @PostMapping("/remove")

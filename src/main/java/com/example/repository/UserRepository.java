@@ -84,4 +84,9 @@ public class UserRepository {
         SqlParameterSource param = new BeanPropertySqlParameterSource(user);
         template.update(updateSql, param);
     }
+
+    public void updateProfile(User user) {
+        String updateSql = "UPDATE users SET name=:name, zipcode=:zipcode, prefecture=:prefecture, municipalities=:municipalities, address=:address, telephone=:telephone WHERE id=:id";
+        template.update(updateSql, new BeanPropertySqlParameterSource(user));
+    }
 }

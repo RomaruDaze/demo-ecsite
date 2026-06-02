@@ -10,16 +10,15 @@
 
 <body>
     <nav class="navbar">
-        <div class="nav-brand">RogerMart.</div>
-
+        <div class="nav-brand"><a th:href="@{/home}" style="color: inherit; text-decoration: none;">RogerMart.</a></div>
         <div class="nav-search">
             <input type="text" placeholder="What are you looking for?">
         </div>
-
         <div class="nav-links">
             <span class="user-greeting" th:if="${session.user != null}">
-                Welcome Back, <span th:text="${session.user.name}"></span>!
-                <button id="btn-shipping-address" class="btn-secondary">Shipping Address</button>
+                <a th:href="@{/profile}" style="text-decoration: none; color: inherit;">
+                    Welcome Back, <span th:text="${session.user.name}"></span>!
+                </a>
             </span>
 
             <span class="user-greeting" th:unless="${session.user != null}">
@@ -28,7 +27,10 @@
             </span>
 
             <a th:href="@{/wishlist}">Wishlist</a>
-            <a th:href="@{/cart}">Cart</a>
+            <a th:href="@{/cart}" class="cart-link">
+                Cart
+                <span class="cart-badge" th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"></span>
+            </a>
         </div>
     </nav>
 
