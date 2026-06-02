@@ -20,11 +20,6 @@ public class UserController {
     @Autowired
     private HttpSession session;
 
-    @GetMapping("home")
-    public String home() {
-        return "home";
-    }
-
     /*
      * Login
      */
