@@ -1,32 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Sign In (Register)</title>
+    <link rel="stylesheet" th:href="@{/css/signin.style.css}">
 </head>
 
 <body>
-    <div>
-        <h2>Sign In</h2>
-        <form th:action="@{/signin}" method="post">
-            <hr>
-            <h3>Credentials</h3>
-            Name : <input type="text" name="name"><br>
-            Email :<input type="email" name="email"><br>
-            Password :<input type="password" name="password"><br>
-            <hr>
-            <h3>Address</h3>
-            Zip-Code :<input type="text" name="zipcode"><br>
-            Prefecture :<input type="text" name="prefecture"><br>
-            municipalities:<input type="text" name="municipalities"><br>
-            address :<input type="text" name="address"><br>
-            telephone :<input type="text" name="telephone"><br>
-            <button>Sign In</button>
-        </form>
-    </div>
+    <div class="signin-container">
+        <h2>Register New Account</h2>
 
+        <form th:action="@{/signin}" th:object="${userForm}" method="post">
+
+            <h3 class="section-title">Credentials</h3>
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" th:field="*{name}">
+                <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" th:field="*{email}">
+                <span class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" th:field="*{password}">
+                <span class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            </div>
+
+            <h3 class="section-title">Address & Contact</h3>
+
+            <div class="form-group">
+                <label>Zip-Code</label>
+                <input type="text" th:field="*{zipcode}">
+                <span class="error" th:if="${#fields.hasErrors('zipcode')}" th:errors="*{zipcode}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Prefecture</label>
+                <input type="text" th:field="*{prefecture}">
+                <span class="error" th:if="${#fields.hasErrors('prefecture')}" th:errors="*{prefecture}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Municipalities</label>
+                <input type="text" th:field="*{municipalities}">
+                <span class="error" th:if="${#fields.hasErrors('municipalities')}" th:errors="*{municipalities}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" th:field="*{address}">
+                <span class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Telephone</label>
+                <input type="text" th:field="*{telephone}">
+                <span class="error" th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}"></span>
+            </div>
+
+            <button type="submit" class="btn-submit">Sign In</button>
+        </form>
+
+        <a class="link-login" th:href="@{/login}">Already have an account? Login here.</a>
+    </div>
 </body>
 
 </html>

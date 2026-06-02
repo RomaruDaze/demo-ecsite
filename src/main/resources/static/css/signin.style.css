@@ -1,0 +1,102 @@
+/* src/main/resources/static/css/signin.style.css */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7f6;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Better for longer forms */
+  min-height: 100vh;
+  margin: 0;
+  padding: 40px 15px; /* Adds padding to top/bottom for scrolling */
+  box-sizing: border-box;
+}
+
+.signin-container {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+.signin-container h2 {
+  text-align: center;
+  color: #333333;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  color: #007bff;
+  font-size: 1.1em;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 5px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555555;
+  font-size: 0.9em;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 0.95em;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.error {
+  color: #dc3545;
+  font-size: 0.85em;
+  margin-top: 5px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745; /* Green for success/register */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.05em;
+  font-weight: bold;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: #218838;
+}
+
+.link-login {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.link-login:hover {
+  color: #343a40;
+  text-decoration: underline;
+}
