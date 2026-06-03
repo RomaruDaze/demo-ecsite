@@ -26,16 +26,41 @@ body {
   color: #007bff;
 }
 
+/* --- Navbar Search Form --- */
+.nav-search {
+    display: flex;
+    align-items: center;
+}
+
 .nav-search input {
-  padding: 8px 15px;
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  outline: none;
+    padding: 8px 15px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-right: none; /* Removes the border between input and button */
+    border-radius: 20px 0 0 20px;
+    outline: none;
+    font-size: 0.95em;
 }
 
 .nav-search input:focus {
-  border-color: #007bff;
+    border-color: #007bff;
+}
+
+.nav-search button {
+    padding: 8px 18px;
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.nav-search button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
 }
 
 .nav-links {

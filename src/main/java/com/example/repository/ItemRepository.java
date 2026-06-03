@@ -42,4 +42,30 @@ public class ItemRepository {
             return null;
         }
     }
+
+    public List<Item> search(String query) {
+        // If the search is empty, just return everything
+        if (query == null || query.trim().isEmpty()) {
+            return findAll();
+        }
+
+        // Split the natural language query into individual words by spaces
+        String[] words = query.trim().split("\\s+");
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM items WHERE 1=1");
+        MapSqlParameterSource param = new MapSqlParameterSource();
+
+        for (int i = 0; i < words.length; i++) {
+            // Enforce that EVERY word must be found in either the name OR description
+            sql.append(" AND (name ILIKE :word").append(i)
+                    .append(" OR description ILIKE :word").append(i).append(")");
+
+            // Wrap the word in '%' for the SQL wildcard match
+            param.addValue("word" + i, "%" + words[i] + "%");
+        }
+
+        sql.append(" ORDER BY id");
+
+        return template.query(sql.toString(), param, ROW_MAPPER);
+    }
 }

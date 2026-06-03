@@ -1,5 +1,5 @@
--- 1. Create the 'user' table
-CREATE TABLE user (
+-- 1. Create the 'users' table
+CREATE TABLE users (
                       id INT AUTO_INCREMENT PRIMARY KEY,
                       name VARCHAR(100) NOT NULL,
                       email VARCHAR(255) NOT NULL UNIQUE,
@@ -12,7 +12,7 @@ CREATE TABLE user (
 );
 
 -- 2. Insert mock data
-INSERT INTO user (name, email, password, zipcode, prefecture, municipalities, address, telephone)
+INSERT INTO users (name, email, password, zipcode, prefecture, municipalities, address, telephone)
 VALUES
     ('Tarou Tanaka', 'tanaka.tarou@example.com', '$2y$10$eImiTxAk4vmM854.CeIcaenN.4.A./m.1/Z.t.31a.u2z26d4837.', '100-0005', 'Tokyo', 'Chiyoda-ku', 'Marunouchi 1-chome', '03-1234-5678'),
     ('Hanako Sato', 'sato.hanako@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '530-0001', 'Osaka', 'Osaka-shi Kita-ku', 'Umeda 1-chome', '06-9876-5432'),

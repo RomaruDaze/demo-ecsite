@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -62,5 +63,25 @@ public class ItemController {
         }
 
         return "detail";
+    }
+
+    @GetMapping("/search")
+    public String search(@RequestParam("q") String query, Model model) {
+        // Fetch matching items and update the session
+        session.setAttribute("items", itemService.search(query));
+
+        // Re-calculate wishlist state for the results
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            List<WishlistItem> wishlist = wishlistService.findByUserId(user.getId());
+            List<Integer> wishlistedItemIds = wishlist.stream().map(WishlistItem::getItemId).toList();
+            model.addAttribute("wishlistedItemIds", wishlistedItemIds);
+        }
+
+        // Pass the query back to the view so it stays visible in the search bar
+        model.addAttribute("searchQuery", query);
+
+        // Reuse the home page layout to display the results!
+        return "home";
     }
 }

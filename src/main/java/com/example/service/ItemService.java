@@ -19,4 +19,8 @@ public class ItemService {
     public Item findById(Integer id) {
         return itemRepository.findById(id);
     }
+
+    public List<Item> search(String query) {
+        return itemRepository.search(query);
+    }
 }
