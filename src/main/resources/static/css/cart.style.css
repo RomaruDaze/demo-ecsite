@@ -35,7 +35,7 @@
   margin: 0 0 10px 0;
 }
 .cart-summary {
-  flex: 1;
+  flex: 0 0 380px; /* Locks the width exactly, preventing it from shrinking or expanding */
   background: white;
   border-radius: 8px;
   padding: 20px;
@@ -67,8 +67,145 @@
   cursor: pointer;
 }
 .cart-item-check {
-    margin-right: 15px;
-    transform: scale(1.5);
-    cursor: pointer;
-    accent-color: #007bff;
+  margin-right: 15px;
+  transform: scale(1.5);
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+/* --- Payment Section --- */
+.payment-switch {
+  position: relative;
+  display: flex;
+  background-color: #e2e6ea;
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 350px;
+}
+
+/* Hide the default radio buttons */
+.payment-switch input[type="radio"] {
+  display: none;
+}
+
+/* Style the text labels */
+.switch-label {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 26px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95em;
+  z-index: 1; /* Ensures text stays above the colored slider */
+  color: #555;
+  transition: color 0.3s ease;
+  margin: 0;
+}
+
+/* The sliding colored background */
+.switch-slider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px); /* Takes up exactly half the switch */
+  background-color: color-mix(in hsl shorter hue, #b4b4b4 50%, #00e1ff 50%);
+  border-radius: 10px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+/* Slide the background to the right when PayPay is checked */
+#method-paypay:checked ~ .switch-slider {
+  transform: translateX(100%);
+}
+
+.switch-label img {
+  height: 20px; /* Locks the height of the logos */
+  width: auto;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+.payment-form {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #e2e6ea;
+
+  /* Lock the height exactly to fit the credit card form */
+  height: 170px;
+  width: 400px;
+  box-sizing: border-box; /* Ensures padding is included in the 170px */
+
+  /* Optional: Centers the PayPay text vertically when it's short */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cc-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.cc-input-group label {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.cc-input-group input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95em;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.cc-input-group input:focus {
+  border-color: #007bff;
+}
+
+/* Card Number Wrapper for inline brand text */
+.cc-number-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cc-number-wrapper input {
+  width: 100%;
+  padding-right: 60px; /* Space for the brand text */
+}
+
+.cc-brand {
+  position: absolute;
+  right: 10px;
+  font-weight: bold;
+  font-size: 0.95em;
+  color: #999;
+  transition: color 0.3s ease;
+}
+
+.cc-brand img {
+  height: 20px; /* Locks the height of the logos */
+  width: auto;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+.cc-details-row {
+  display: flex;
+  gap: 10px;
+}
+
+.cc-details-row .cc-input-group {
+  flex: 1;
 }

@@ -87,7 +87,52 @@
                     <span>Total:</span>
                     <span class="total-price" th:text="'¥' + ${totalPrice}"></span>
                 </div>
-                <button class="btn-checkout">Proceed to Checkout</button>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+                <h3>Payment Method</h3>
+
+                <div class="payment-switch">
+                    <input type="radio" name="paymentMethod" id="method-cc" value="credit-card" checked
+                        onchange="togglePaymentMethod()">
+                    <label for="method-cc" class="switch-label">💳 Credit Card</label>
+
+                    <input type="radio" name="paymentMethod" id="method-paypay" value="paypay"
+                        onchange="togglePaymentMethod()">
+                    <label for="method-paypay" class="switch-label">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Paypay.svg/1280px-Paypay.svg.png?_=20220627054042"
+                            alt="">
+                    </label>
+
+                    <div class="switch-slider"></div>
+                </div>
+
+                <div id="credit-card-form" class="payment-form">
+                    <div class="cc-input-group">
+                        <label>Card Number</label>
+                        <div class="cc-number-wrapper">
+                            <input type="text" id="cc-number" placeholder="0000 0000 0000 0000" maxlength="19">
+                            <span id="cc-brand" class="cc-brand">💳</span>
+                        </div>
+                    </div>
+                    <div class="cc-details-row">
+                        <div class="cc-input-group">
+                            <label>Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="cc-input-group">
+                            <label>CVC</label>
+                            <input type="text" placeholder="123" maxlength="4">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="paypay-form" class="payment-form" style="display: none;">
+                    <p style="font-size: 0.9em; color: #555; margin: 0;">You will be redirected to the PayPay app or
+                        website to complete your purchase securely.</p>
+                </div>
+
+                <button class="btn-checkout" style="margin-top: 20px;">Proceed to Checkout</button>
             </div>
         </div>
     </main>
@@ -142,6 +187,58 @@
                 document.getElementById('form-check-update-' + id).submit();
             });
         });
+
+        // Handle Payment Method Toggle
+        function togglePaymentMethod() {
+            const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (method === 'credit-card') {
+                document.getElementById('credit-card-form').style.display = 'block';
+                document.getElementById('paypay-form').style.display = 'none';
+            } else {
+                document.getElementById('credit-card-form').style.display = 'none';
+                document.getElementById('paypay-form').style.display = 'block';
+            }
+        }
+
+        // Handle Credit Card Detection and Formatting
+        const ccInput = document.getElementById('cc-number');
+        const ccBrand = document.getElementById('cc-brand');
+
+        if (ccInput) {
+            ccInput.addEventListener('input', function (e) {
+                // Remove non-numeric characters and format with spaces every 4 digits
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+
+                // Brand Detection Logic
+                let prefix2 = parseInt(value.substring(0, 2));
+                let prefix4 = parseInt(value.substring(0, 4));
+
+                // Image URLs for the card logos
+                const visaIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Visa_Inc._logo_%282005%E2%80%932014%29.svg/1920px-Visa_Inc._logo_%282005%E2%80%932014%29.svg.png?_=20170118154621" alt="Visa">';
+                const masterIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" alt="MasterCard">';
+                const jcbIcon = '<img src="https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg" alt="JCB">';
+                const defaultIcon = '💳';
+
+                if (value.startsWith('4')) {
+                    ccBrand.innerHTML = visaIcon;
+                } else if ((prefix2 >= 51 && prefix2 <= 55) || (prefix4 >= 2221 && prefix4 <= 2720)) {
+                    ccBrand.innerHTML = masterIcon;
+                } else if (prefix4 >= 3528 && prefix4 <= 3589) {
+                    ccBrand.innerHTML = jcbIcon;
+                } else {
+                    ccBrand.innerHTML = defaultIcon;
+                    ccBrand.style.color = '#999';
+                }
+            });
+        }
     </script>
 </body>
 
