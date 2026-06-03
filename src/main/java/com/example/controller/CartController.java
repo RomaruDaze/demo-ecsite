@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.domain.CartItem;
 import com.example.domain.User;
 import com.example.service.CartService;
+import com.example.service.OrderService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,5 +101,21 @@ public class CartController {
     public String remove(@RequestParam Integer id) {
         cartService.remove(id);
         return "redirect:/cart";
+    }
+
+
+    @Autowired
+    private OrderService orderService;
+
+    // Add this new endpoint
+    @PostMapping("/checkout")
+    public String checkout(RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        orderService.checkout(user);
+
+        redirectAttributes.addFlashAttribute("toastMessage", "Checkout Successful! A receipt has been sent to your email.");
+        return "redirect:/profile"; // Redirect to profile to see the order
     }
 }

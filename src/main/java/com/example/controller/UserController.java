@@ -1,7 +1,9 @@
 package com.example.controller;
 
+import com.example.domain.Order;
 import com.example.domain.User;
 import com.example.form.UserForm;
+import com.example.service.OrderService;
 import com.example.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("")
 public class UserController {
@@ -21,12 +26,19 @@ public class UserController {
     @Autowired
     private HttpSession session;
 
+    @Autowired
+    private OrderService orderService;
+
     /*
      * Login
      */
     @GetMapping("login")
     public String login(Model model) {
-        // Provide an empty form object for Thymeleaf to bind to
+        // Redirect to home if user is already logged in
+        if (session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
+
         model.addAttribute("userForm", new UserForm());
         return "login";
     }
@@ -53,6 +65,11 @@ public class UserController {
      */
     @GetMapping("signin")
     public String signin(Model model) {
+        // Redirect to home if user is already logged in
+        if (session.getAttribute("user") != null) {
+            return "redirect:/home";
+        }
+
         model.addAttribute("userForm", new UserForm());
         return "signin";
     }
@@ -120,8 +137,24 @@ public class UserController {
     }
 
     @GetMapping("profile")
-    public String viewProfile() {
-        if (session.getAttribute("user") == null) return "redirect:/login";
+    public String viewProfile(Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        // Fetch all orders and separate them by status
+        List<Order> allOrders = orderService.getUserOrders(user.getId());
+
+        List<Order> currentOrders = allOrders.stream()
+                .filter(o -> !o.getStatus().equals("DELIVERED"))
+                .collect(Collectors.toList());
+
+        List<Order> pastOrders = allOrders.stream()
+                .filter(o -> o.getStatus().equals("DELIVERED"))
+                .collect(Collectors.toList());
+
+        model.addAttribute("currentOrders", currentOrders);
+        model.addAttribute("pastOrders", pastOrders);
+
         return "profile";
     }
 
