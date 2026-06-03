@@ -28,7 +28,6 @@ public class ItemRepository {
     };
 
     public List<Item> findAll() {
-        System.out.println("RepositoryFindAll");
         String sql = "SELECT * FROM items ORDER by id";
         return template.query(sql, ROW_MAPPER);
     }

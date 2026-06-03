@@ -43,7 +43,6 @@ public class UserRepository {
     }
 
     public void save(User user) {
-        System.out.println("RepositorySave");
         SqlParameterSource param = new BeanPropertySqlParameterSource(user);
 
         if (user.getId() == null) {
@@ -72,7 +71,6 @@ public class UserRepository {
     }
 
     public void updateAddress(User user) {
-        System.out.println("RepositoryUpdateAddress");
         String updateSql = "UPDATE users SET " +
                 "zipcode=:zipcode, " +
                 "prefecture=:prefecture, " +
