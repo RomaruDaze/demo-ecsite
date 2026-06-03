@@ -65,6 +65,89 @@
             </div>
         </div>
     </main>
+    <div class="review-section">
+        <h3>Customer Reviews</h3>
+
+        <div class="rating-overview" th:if="${item.reviewCount != null and item.reviewCount > 0}">
+            <h1 th:text="${#numbers.formatDecimal(item.averageRating, 1, 1)}"></h1>
+            <p>Based on <span th:text="${item.reviewCount}"></span> reviews</p>
+        </div>
+
+        <div class="add-review-box" th:if="${canReview}">
+            <h4>Write a Review</h4>
+            <form th:action="@{/review/add}" method="post">
+                <input type="hidden" name="itemId" th:value="${item.id}">
+                <select name="rating" required class="rating-select">
+                    <option value="" disabled selected>Select Rating</option>
+                    <option value="5">★★★★★ - Excellent</option>
+                    <option value="4">★★★★☆ - Good</option>
+                    <option value="3">★★★☆☆ - Average</option>
+                    <option value="2">★★☆☆☆ - Poor</option>
+                    <option value="1">★☆☆☆☆ - Terrible</option>
+                </select>
+                <textarea name="comment" placeholder="Tell us what you thought..." required rows="3"
+                    class="review-textarea"></textarea>
+                <button type="submit" class="btn-submit">Submit Review</button>
+            </form>
+        </div>
+
+        <div class="review-list">
+            <p th:if="${#lists.isEmpty(reviews)}">No reviews yet. Be the first!</p>
+
+            <div class="review-card" th:each="r : ${reviews}">
+                <div class="review-header">
+                    <strong th:text="${r.userName}"></strong>
+                    <span class="stars" th:text="${'★'.repeat(r.rating)} + ${'☆'.repeat(5 - r.rating)}"></span>
+                    <span class="date" th:text="${#temporals.format(r.createdAt, 'yyyy-MM-dd')}"></span>
+                </div>
+                <p class="review-text" th:text="${r.comment}"></p>
+
+                <div class="review-actions">
+                    <form th:action="@{/review/like}" method="post">
+                        <input type="hidden" name="reviewId" th:value="${r.id}">
+                        <button type="submit" class="btn-like" th:classappend="${r.likedByCurrentUser ? 'liked' : ''}">
+                            👍 <span th:text="${r.likeCount}"></span>
+                        </button>
+                    </form>
+
+                    <form th:action="@{/review/delete}" method="post"
+                        th:if="${session.user != null and session.user.id == r.userId}">
+                        <input type="hidden" name="id" th:value="${r.id}">
+                        <button type="submit" class="btn-delete" style="margin-left:10px;">Delete</button>
+                    </form>
+                </div>
+
+                <div class="comments-section">
+                    <div class="comment-item" th:each="c : ${r.comments}">
+                        <strong><span th:text="${c.userName}"></span>:</strong>
+                        <span th:text="${c.comment}"></span>
+
+                        <div class="comment-actions">
+                            <form th:action="@{/review/like}" method="post" style="display:inline;">
+                                <input type="hidden" name="commentId" th:value="${c.id}">
+                                <button type="submit" class="btn-like small"
+                                    th:classappend="${c.likedByCurrentUser ? 'liked' : ''}">
+                                    👍 <span th:text="${c.likeCount}"></span>
+                                </button>
+                            </form>
+                            <form th:action="@{/review/comment/delete}" method="post" style="display:inline;"
+                                th:if="${session.user != null and session.user.id == c.userId}">
+                                <input type="hidden" name="id" th:value="${c.id}">
+                                <button type="submit" class="btn-delete small">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/review/comment/add}" method="post" class="add-reply-form"
+                        th:if="${session.user != null}">
+                        <input type="hidden" name="reviewId" th:value="${r.id}">
+                        <input type="text" name="comment" placeholder="Reply to this review..." required>
+                        <button type="submit">Reply</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="toast" class="toast" th:if="${toastMessage}" th:text="${toastMessage}"></div>
 </body>

@@ -86,3 +86,134 @@
   padding: 0; /* Clears padding to center the heart */
   font-size: 1.8em;
 }
+
+/* --- Reviews Section --- */
+.review-section {
+  margin-top: 50px;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.rating-overview {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.rating-overview h1 {
+  font-size: 3em;
+  color: #ffc107;
+  margin: 0;
+}
+
+.add-review-box {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+.rating-select {
+  padding: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.review-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.review-card {
+  border-bottom: 1px solid #eee;
+  padding: 20px 0;
+}
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.review-header .stars {
+  color: #ffc107;
+  font-size: 1.1em;
+}
+.review-header .date {
+  color: #888;
+  font-size: 0.85em;
+  margin-left: auto;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.btn-like {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 4px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.2s;
+}
+.btn-like.liked {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.btn-delete {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.9em;
+  text-decoration: underline;
+}
+
+/* Comments */
+.comments-section {
+  margin-top: 15px;
+  padding-left: 20px;
+  border-left: 3px solid #eee;
+}
+.comment-item {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 0.95em;
+}
+.comment-actions {
+  margin-top: 5px;
+}
+.btn-like.small {
+  padding: 2px 8px;
+  font-size: 0.85em;
+}
+
+.add-reply-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.add-reply-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.add-reply-form button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 0 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}

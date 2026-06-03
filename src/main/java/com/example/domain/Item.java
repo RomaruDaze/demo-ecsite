@@ -14,4 +14,6 @@ public class Item {
     private Integer price;
     private String imageUrl;
     private boolean deleted;
+    private Double averageRating;
+    private Integer reviewCount;
 }

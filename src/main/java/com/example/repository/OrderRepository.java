@@ -60,4 +60,18 @@ public class OrderRepository {
                 .addValue("id", id);
         template.update(sql, param);
     }
+
+    public boolean canUserReviewItem(Integer userId, Integer itemId) {
+        String sql = "SELECT COUNT(*) FROM orders o JOIN order_items oi ON o.id = oi.order_id " +
+                "WHERE o.user_id = :userId AND oi.item_id = :itemId AND o.status IN ('DELIVERED', 'REVIEWED')";
+        Integer count = template.queryForObject(sql, new MapSqlParameterSource().addValue("userId", userId).addValue("itemId", itemId), Integer.class);
+        return count != null && count > 0;
+    }
+
+    public void markOrderAsReviewedByItem(Integer userId, Integer itemId) {
+        String sql = "UPDATE orders SET status = 'REVIEWED' WHERE id IN (" +
+                "SELECT o.id FROM orders o JOIN order_items oi ON o.id = oi.order_id " +
+                "WHERE o.user_id = :userId AND oi.item_id = :itemId AND o.status = 'DELIVERED')";
+        template.update(sql, new MapSqlParameterSource().addValue("userId", userId).addValue("itemId", itemId));
+    }
 }

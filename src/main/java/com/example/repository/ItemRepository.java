@@ -24,17 +24,22 @@ public class ItemRepository {
         item.setPrice(rs.getInt("price"));
         item.setImageUrl(rs.getString("image_url"));
         item.setDeleted(rs.getBoolean("deleted"));
+        try {
+            item.setAverageRating(rs.getDouble("average_rating"));
+            item.setReviewCount(rs.getInt("review_count"));
+        } catch (Exception e) {}
         return item;
     };
 
     public List<Item> findAll() {
-        String sql = "SELECT * FROM items ORDER by id";
+        String sql = "SELECT i.*, COALESCE(AVG(r.rating), 0) as average_rating, COUNT(r.id) as review_count " +
+                "FROM items i LEFT JOIN reviews r ON i.id = r.item_id GROUP BY i.id ORDER BY i.id";
         return template.query(sql, ROW_MAPPER);
     }
 
     public Item findById(Integer id) {
-        String sql = "SELECT * FROM items WHERE id = :id";
-        SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
+        String sql = "SELECT i.*, COALESCE(AVG(r.rating), 0) as average_rating, COUNT(r.id) as review_count " +
+                "FROM items i LEFT JOIN reviews r ON i.id = r.item_id WHERE i.id = :id GROUP BY i.id";SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
         try {
             return template.queryForObject(sql, param, ROW_MAPPER);
         } catch (EmptyResultDataAccessException e) {
@@ -51,8 +56,9 @@ public class ItemRepository {
         // Split the natural language query into individual words by spaces
         String[] words = query.trim().split("\\s+");
 
-        StringBuilder sql = new StringBuilder("SELECT * FROM items WHERE 1=1");
-        MapSqlParameterSource param = new MapSqlParameterSource();
+        StringBuilder sql = new StringBuilder(
+                "SELECT i.*, COALESCE(AVG(r.rating), 0) as average_rating, COUNT(r.id) as review_count " +
+                        "FROM items i LEFT JOIN reviews r ON i.id = r.item_id WHERE 1=1");MapSqlParameterSource param = new MapSqlParameterSource();
 
         for (int i = 0; i < words.length; i++) {
             // Enforce that EVERY word must be found in either the name OR description
@@ -63,8 +69,7 @@ public class ItemRepository {
             param.addValue("word" + i, "%" + words[i] + "%");
         }
 
-        sql.append(" ORDER BY id");
-
+        sql.append(" GROUP BY i.id ORDER BY i.id");
         return template.query(sql.toString(), param, ROW_MAPPER);
     }
 }

@@ -1,3 +1,4 @@
+drop table if exists reviews
 CREATE TABLE reviews (
                          id SERIAL PRIMARY KEY,
                          item_id INT NOT NULL,

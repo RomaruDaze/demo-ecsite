@@ -85,4 +85,8 @@ public class OrderService {
     public void updateOrderStatus(Integer orderId, String status) {
         orderRepository.updateStatus(orderId, status);
     }
+
+    public boolean canUserReviewItem(Integer userId, Integer itemId) {
+        return orderRepository.canUserReviewItem(userId, itemId);
+    }
 }

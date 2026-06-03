@@ -3,8 +3,7 @@ package com.example.controller;
 import com.example.domain.Item;
 import com.example.domain.User;
 import com.example.domain.WishlistItem;
-import com.example.service.ItemService;
-import com.example.service.WishlistService;
+import com.example.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +26,12 @@ public class ItemController {
 
     @Autowired
     private HttpSession session;
+
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("")
     public String root() {
@@ -51,16 +56,18 @@ public class ItemController {
     @GetMapping("/item/{id}")
     public String itemDetail(@PathVariable Integer id, Model model) {
         Item item = itemService.findById(id);
-        if (item == null) {
-            return "redirect:/home"; // Item not found
-        }
+        if (item == null) return "redirect:/home";
         model.addAttribute("item", item);
 
         User user = (User) session.getAttribute("user");
+        Integer userId = null;
         if (user != null) {
-            WishlistItem wishlistItem = wishlistService.findByUserIdAndItemId(user.getId(), id);
-            model.addAttribute("isWishlisted", wishlistItem != null);
+            userId = user.getId();
+            model.addAttribute("isWishlisted", wishlistService.findByUserIdAndItemId(userId, id) != null);
+            model.addAttribute("canReview", orderService.canUserReviewItem(userId, id));
         }
+
+        model.addAttribute("reviews", reviewService.getFullReviewsForItem(id, userId));
 
         return "detail";
     }
