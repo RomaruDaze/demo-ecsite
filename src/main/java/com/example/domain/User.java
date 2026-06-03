@@ -17,4 +17,5 @@ public class User {
     private String municipalities;
     private String address;
     private String telephone;
+    private String role;
 }

@@ -17,6 +17,8 @@
             <a th:href="@{/wishlist}">Wishlist</a>
             <a th:href="@{/cart}" class="cart-link">Cart <span class="cart-badge"
                     th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"></span></a>
+            <a th:if="${session.user != null and session.user.role == 'ADMIN'}" th:href="@{/admin}"
+                style="color: #5c5c5c; font-weight: bold;">Admin Panel</a>
         </div>
     </nav>
 

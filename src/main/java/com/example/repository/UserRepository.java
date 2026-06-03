@@ -12,6 +12,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserRepository {
     @Autowired
@@ -28,8 +30,14 @@ public class UserRepository {
         user.setMunicipalities(rs.getString("municipalities"));
         user.setAddress(rs.getString("address"));
         user.setTelephone(rs.getString("telephone"));
+        user.setRole(rs.getString("role")); // NEW: Map role
         return user;
     };
+
+    public List<User> findAll() {
+        String sql = "SELECT * FROM users ORDER BY id";
+        return template.query(sql, ROW_MAPPER);
+    }
 
     public User findAuth(String email, String password) {
         String sql = "SELECT * FROM users WHERE email = :email AND password = :password";
@@ -46,8 +54,8 @@ public class UserRepository {
         SqlParameterSource param = new BeanPropertySqlParameterSource(user);
 
         if (user.getId() == null) {
-            String insertSql = "INSERT INTO users (name,email,password,zipcode,prefecture,municipalities,address,telephone) " +
-                    "VALUES (:name,:email,:password,:zipcode,:prefecture,:municipalities,:address,:telephone)";
+            String insertSql = "INSERT INTO users (name,email,password,zipcode,prefecture,municipalities,address,telephone,role) " +
+                    "VALUES (:name,:email,:password,:zipcode,:prefecture,:municipalities,:address,:telephone,:role)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
             String[] keyColumnsNames = {"id"};
@@ -56,16 +64,9 @@ public class UserRepository {
             System.out.println(keyHolder.getKey() + "が割り当てられました。");
         } else {
             String updateSql = "UPDATE users " +
-                    "SET name=:name" +
-                    ",email=:email" +
-                    ",password=:password" +
-                    ",zipcode=:zipcode" +
-                    ",prefecture=:prefecture" +
-                    ",municipalities=:municipalities" +
-                    ",address=:address" +
-                    ",telephone=:telephone " +
-                    "WHERE id = :id";
-
+                    "SET name=:name, email=:email, password=:password, zipcode=:zipcode, " +
+                    "prefecture=:prefecture, municipalities=:municipalities, address=:address, " +
+                    "telephone=:telephone, role=:role WHERE id = :id";
             template.update(updateSql, param);
         }
     }

@@ -91,6 +91,7 @@ public class UserController {
         user.setMunicipalities(form.getMunicipalities());
         user.setAddress(form.getAddress());
         user.setTelephone(form.getTelephone());
+        user.setRole("USER");
 
         userService.save(user);
         return "redirect:/login"; // Typically redirect to avoid duplicate submissions

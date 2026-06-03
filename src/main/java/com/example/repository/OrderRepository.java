@@ -27,6 +27,11 @@ public class OrderRepository {
         return order;
     };
 
+    public List<Order> findAll() {
+        String sql = "SELECT * FROM orders ORDER BY order_date DESC";
+        return template.query(sql, ROW_MAPPER);
+    }
+
     public Integer save(Order order) {
         String sql = "INSERT INTO orders (user_id, total_price, status, order_date) " +
                 "VALUES (:userId, :totalPrice, :status, :orderDate)";
@@ -46,5 +51,13 @@ public class OrderRepository {
         String sql = "SELECT * FROM orders WHERE user_id = :userId ORDER BY order_date DESC";
         SqlParameterSource param = new MapSqlParameterSource().addValue("userId", userId);
         return template.query(sql, param, ROW_MAPPER);
+    }
+
+    public void updateStatus(Integer id, String status) {
+        String sql = "UPDATE orders SET status = :status WHERE id = :id";
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("status", status)
+                .addValue("id", id);
+        template.update(sql, param);
     }
 }

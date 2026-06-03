@@ -25,4 +25,7 @@ public class UserService {
     }
 
     public void updateProfile(User user) { userRepository.updateProfile(user); }
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }

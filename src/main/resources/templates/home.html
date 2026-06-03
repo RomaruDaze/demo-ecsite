@@ -11,6 +11,8 @@
 <body>
     <nav class="navbar">
         <div class="nav-brand"><a th:href="@{/home}" style="color: inherit; text-decoration: none;">RogerMart.</a></div>
+        <a th:if="${session.user != null and session.user.role == 'ADMIN'}" th:href="@{/admin}"
+            style="color: #007bff; font-weight: bold;">Admin Panel</a>
         <form class="nav-search" th:action="@{/search}" method="get">
             <input type="text" name="q" placeholder="What are you looking for?" th:value="${searchQuery}">
             <button type="submit">Search</button>
@@ -32,6 +34,8 @@
                 Cart
                 <span class="cart-badge" th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"></span>
             </a>
+            <a th:if="${session.user != null and session.user.role == 'ADMIN'}" th:href="@{/admin}"
+                style="color: #5c5c5c; font-weight: bold;">Admin Panel</a>
         </div>
     </nav>
 

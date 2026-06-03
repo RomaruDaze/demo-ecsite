@@ -73,4 +73,16 @@ public class OrderService {
         }
         return orders;
     }
+
+    public List<Order> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        for (Order order : orders) {
+            order.setOrderItems(orderItemRepository.findByOrderId(order.getId()));
+        }
+        return orders;
+    }
+
+    public void updateOrderStatus(Integer orderId, String status) {
+        orderRepository.updateStatus(orderId, status);
+    }
 }
