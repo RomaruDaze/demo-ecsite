@@ -560,3 +560,209 @@ sequenceDiagram
 | `reviews` | `Review` | `userName`, `likeCount`, `likedByCurrentUser` computed via joins/subqueries |
 | `review_comments` | `ReviewComment` | same computed fields as `Review` |
 | `review_likes` | *(no dedicated domain class)* | polymorphic like table for reviews/comments, managed entirely inside `ReviewRepository.toggleLike()` |
+
+---
+
+## 9. Combined Domain, Form & Controller UML Class Diagram
+
+This diagram merges the **domain**, **form**, and **controller** layers (service/repository layers omitted) into a single view, showing both the domain model's internal relationships and how each controller consumes domain/form objects.
+
+```mermaid
+classDiagram
+    %% ===== Domain =====
+    class User {
+        -Integer id
+        -String name
+        -String email
+        -String password
+        -String zipcode
+        -String prefecture
+        -String municipalities
+        -String address
+        -String telephone
+        -String role
+    }
+
+    class Item {
+        -Integer id
+        -String name
+        -String description
+        -Integer price
+        -String imageUrl
+        -boolean deleted
+        -Double averageRating
+        -Integer reviewCount
+    }
+
+    class CartItem {
+        -Integer id
+        -Integer userId
+        -Integer itemId
+        -Integer quantity
+        -boolean checked
+        -Item item
+    }
+
+    class WishlistItem {
+        -Integer id
+        -Integer userId
+        -Integer itemId
+        -Item item
+    }
+
+    class Order {
+        -Integer id
+        -Integer userId
+        -Integer totalPrice
+        -String status
+        -LocalDateTime orderDate
+        -List~OrderItem~ orderItems
+    }
+
+    class OrderItem {
+        -Integer id
+        -Integer orderId
+        -Integer itemId
+        -Integer quantity
+        -Integer priceAtPurchase
+        -Item item
+    }
+
+    class Review {
+        -Integer id
+        -Integer itemId
+        -Integer userId
+        -String userName
+        -Integer rating
+        -String comment
+        -LocalDateTime createdAt
+        -int likeCount
+        -boolean likedByCurrentUser
+        -List~ReviewComment~ comments
+    }
+
+    class ReviewComment {
+        -Integer id
+        -Integer reviewId
+        -Integer userId
+        -String userName
+        -String comment
+        -LocalDateTime createdAt
+        -int likeCount
+        -boolean likedByCurrentUser
+    }
+
+    %% ===== Form =====
+    class UserForm {
+        -String name
+        -String email
+        -String password
+        -String zipcode
+        -String prefecture
+        -String municipalities
+        -String address
+        -String telephone
+        +interface LoginGroup
+        +interface SignInGroup
+    }
+
+    %% ===== Controllers =====
+    class UserController {
+        -UserService userService
+        -OrderService orderService
+        -HttpSession session
+        +login(Model) String
+        +login(UserForm, BindingResult, Model) String
+        +signin(Model) String
+        +signin(UserForm, BindingResult) String
+        +updateAddress(...) String
+        +logout() String
+        +viewProfile(Model) String
+        +updateProfile(...) String
+    }
+
+    class ItemController {
+        -ItemService itemService
+        -WishlistService wishlistService
+        -OrderService orderService
+        -ReviewService reviewService
+        -HttpSession session
+        +root() String
+        +home(Model) String
+        +itemDetail(id, Model) String
+        +search(query, Model) String
+    }
+
+    class CartController {
+        -CartService cartService
+        -OrderService orderService
+        -HttpSession session
+        +viewCart(Model) String
+        +add(itemId, ...) String
+        +buyNow(itemId) String
+        +updateChecked(id, checked) String
+        +updateQuantity(id, quantity, ...) String
+        +remove(id) String
+        +checkout(...) String
+    }
+
+    class WishlistController {
+        -WishlistService wishlistService
+        -HttpSession session
+        +viewWishlist(Model) String
+        +add(itemId, ...) String
+        +remove(id) String
+    }
+
+    class ReviewController {
+        -ReviewService reviewService
+        -HttpSession session
+        +addReview(Review, ...) String
+        +editReview(id, rating, comment, ...) String
+        +deleteReview(id, ...) String
+        +addComment(ReviewComment, ...) String
+        +deleteComment(id, ...) String
+        +toggleLike(reviewId, commentId, ...) String
+    }
+
+    class AdminController {
+        -HttpSession session
+        -UserService userService
+        -ItemService itemService
+        -OrderService orderService
+        +adminDashboard(Model) String
+        +updateOrderStatus(orderId, status, ...) String
+    }
+
+    class GlobalControllerAdvice {
+        -CartService cartService
+        -HttpSession session
+        +addGlobalAttributes(Model) void
+    }
+
+    %% ===== Domain-internal relationships =====
+    CartItem "1" o-- "1" Item : item
+    WishlistItem "1" o-- "1" Item : item
+    Order "1" o-- "*" OrderItem : orderItems
+    OrderItem "1" o-- "1" Item : item
+    Review "1" o-- "*" ReviewComment : comments
+
+    %% ===== Controller -> Form/Domain relationships =====
+    UserController ..> UserForm : binds
+    UserController ..> User : session attr
+    UserController ..> Order : view model
+    ItemController ..> Item : view model
+    ItemController ..> User : session attr
+    ItemController ..> WishlistItem : view model
+    ItemController ..> Review : view model
+    CartController ..> CartItem : view model
+    CartController ..> User : session attr
+    WishlistController ..> WishlistItem : view model
+    WishlistController ..> User : session attr
+    ReviewController ..> Review : binds
+    ReviewController ..> ReviewComment : binds
+    ReviewController ..> User : session attr
+    AdminController ..> User : view model + session attr
+    GlobalControllerAdvice ..> CartItem : view model
+    GlobalControllerAdvice ..> User : session attr
+```
